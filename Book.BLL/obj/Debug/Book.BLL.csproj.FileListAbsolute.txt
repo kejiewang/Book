@@ -1,0 +1,9 @@
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\bin\Debug\Book.BLL.dll
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\bin\Debug\Book.BLL.pdb
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\bin\Debug\Book.DAL.dll
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\bin\Debug\Book.Model.dll
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\bin\Debug\Book.DAL.pdb
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\bin\Debug\Book.Model.pdb
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\obj\Debug\Book.BLL.csprojResolveAssemblyReference.cache
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\obj\Debug\Book.BLL.dll
+F:\Web工程案例\课程设计\project2\Web\Book.BLL\obj\Debug\Book.BLL.pdb

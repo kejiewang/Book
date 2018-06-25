@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i> 入库情况</h3>
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="content-panel">
+                    <h4><i class="fa fa-angle-right"></i> Responsive Table</h4>
+                    <section id="unseen">
+                        <table id="InList"></table>
+                        
+                    </section>
+                </div><!-- /content-panel -->
+            </div><!-- /col-lg-4 -->
+        </div><!-- /row -->
+
+
+    </section>
+
+
+</section>
+
+
+@section js{
+    @*<script src="~/assets/js/jquery.js">
+
+        </script>*@
+    <link href="~/assets/bootstraptable/src/bootstrap-table.css" rel="stylesheet" />
+
+    <script src="~/assets/bootstraptable/src/bootstrap-table.js"></script>
+
+    <script>
+
+        $('#InList').bootstrapTable({
+            url: '/StockReport/GetList',
+            method: 'post',
+            dataType: "json",
+            //dataField: "data",
+            classes: 'table',//边框
+            undefinedText: '',//当数据为 undefined 时显示的字符
+            pagination: true,//启动分页
+            paginationLoop: true,
+            pageNumber: 1,
+            pageSize: 5,
+            pageList: [1, 5, 10, 20],
+            striped: true,
+            showColumns: true,  //显示下拉框勾选要显示的列
+            showRefresh: true,  //显示刷新按钮
+            showToggle: true,//显示一行是否改成竖着
+            showPaginationSwitch: true,//是否显示 下面的分页框
+            search: true, //显示搜索框
+           
+
+        
+            // 实现服务器分页
+            queryParamsType: '',
+            queryParams: queryParams, // 请求服务器时所传参数
+            sidePagination: 'server', // 请求服务器指定分页
+            locale: 'zh-CN',
+
+            //detailFormatter: function (index, row) {
+            //    return JSON.stringify(row);
+            //},
+            columns: [{
+                field: 'checkbox',
+                title: 'checkbox',
+                checkbox: true
+            }, {
+                field: 'BookName',
+                title: '书名',
+                align: 'center'
+            }, {
+                field: 'Count',
+                title: '数量',
+                align: 'center',
+            }
+
+            ]
+        });
+        function queryParams(params) {
+            return {
+                pageSize: params.pageSize,
+                pageIndex: params.pageNumber
+            }
+        }
+    </script>
+}
+
+
+
+

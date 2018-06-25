@@ -1,0 +1,7 @@
+F:\Web工程案例\课程设计\project2\Web\Book.DAL\bin\Debug\Book.DAL.dll
+F:\Web工程案例\课程设计\project2\Web\Book.DAL\bin\Debug\Book.DAL.pdb
+F:\Web工程案例\课程设计\project2\Web\Book.DAL\bin\Debug\Book.Model.dll
+F:\Web工程案例\课程设计\project2\Web\Book.DAL\bin\Debug\Book.Model.pdb
+F:\Web工程案例\课程设计\project2\Web\Book.DAL\obj\Debug\Book.DAL.csprojResolveAssemblyReference.cache
+F:\Web工程案例\课程设计\project2\Web\Book.DAL\obj\Debug\Book.DAL.dll
+F:\Web工程案例\课程设计\project2\Web\Book.DAL\obj\Debug\Book.DAL.pdb

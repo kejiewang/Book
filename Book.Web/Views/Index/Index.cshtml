@@ -1,0 +1,211 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    List<Book.Model.T_Base_Book> lst = ViewBag.lst;
+    int count = ViewBag.count;
+    int pageSize = ViewBag.PageSize;
+    int MaxPageIndex = ViewBag.MaxPageIndex;
+}
+
+@section css{
+
+}
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i> 书籍信息</h3>
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="content-panel">
+                    <h4><i class="fa fa-angle-right"></i>书籍列表 </h4>
+                    <section id="unseen">
+                        <table class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>书名</th>
+                                    <th>出版社</th>
+                                    <th>作者</th>
+                                    <th>编码</th>
+                                    <th>版本</th>
+                                    <th>价格</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyContent">
+                                @foreach (var item in lst)
+                                {
+                                    <tr id="tr_@item.Id">
+                                        <td>@item.Id</td>
+                                        <td>@item.BookName</td>
+                                        <td>@item.PressName</td>
+                                        <td>@item.Author</td>
+                                        <td>@item.SN</td>
+                                        <td>@item.Version</td>
+                                        <td>@item.Price</td>
+
+                                        <td>
+                                            <a href="javascript:deleteJudge(@item.Id)">删除</a>
+                                            <a href="/Index/update?id=@item.Id">编辑</a>
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+
+                        <div class="btn-group" id="pageBtnGroup">
+                            @{
+                                for (int i = 1; i <= Math.Ceiling(count * 1.0 / pageSize); i++)
+                                {
+                                    if (i == 1)
+                                    {
+                                        <button type="button" class="btn btn-default active" onclick="getList(@i)">@i</button>
+                                    }
+                                    else
+                                    {  <button type="button" class="btn btn-default" onclick="getList(@i)">@i</button>
+                                    }
+                                    if (i >= MaxPageIndex)
+                                    {
+                                        <button type="button" class="btn btn-default" onclick="getList(@(i+1))">...</button>
+                                        <button type="button" class="btn btn-default" onclick="getList(@(Math.Ceiling(count * 1.0 / pageSize)))">@(Math.Ceiling(count * 1.0 / pageSize))</button>
+                                        break;
+                                    }
+                                }
+                            }
+
+                        </div>
+
+                    </section>
+                </div><!-- /content-panel -->
+            </div><!-- /col-lg-4 -->
+        </div><!-- /row -->
+
+    </section>
+
+
+
+</section>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                请确认是否删除
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="bookDelete()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section js{
+
+    currentId=0;
+    function deleteJudge(Id)
+    {
+    currentId=Id;
+    $('#myModal').modal('show')
+    }
+
+    function bookDelete()
+    {
+
+    $('#myModal').modal('hide')
+    Id=currentId;
+
+
+    $.ajax({
+    url: "/index/DeleteJson",
+    data: "Id=" + Id,
+    type: "post",
+    dataType: "json",
+    success: function (result) {
+    $("#tr_" + Id).remove();
+    },
+    error: function () {
+    alert("通讯错误");
+    }
+    })
+
+
+    }
+
+
+
+
+
+}
+
+<script type="text/javascript">
+    function getList(currentPage) {
+        $.ajax({
+            url: "/index/GetList",
+            data: "currentPage=" + currentPage,
+            type: "post",
+            success: function (result) {
+                // alert(result[0].BookName);
+                var html = "";
+                for (var i = 0; i < result.length; i++) {
+                    html += "<tr id=\"tr_" + result[i].Id + "\">";
+                    html += " <td>" + result[i].Id + "</td>"
+                    html += "<td>" + result[i].BookName + "</td>";
+                    html += "<td>" + result[i].PressName + "</td>";
+                    html += "<td>" + result[i].Author + "</td>";
+                    html += "<td>" + result[i].SN + "</td>";
+                    html += "<td>" + result[i].Version + "</td>";
+                    html += "<td>" + result[i].Price + "</td>";
+                    html += "<td>";
+                    html += "  <a href=\"javascript:bookDeletePre(" + result[i].Id + ")\">删除</a>";
+                    html += "  <a href=\"/book/update?Id=" + result[i].Id + ")\">编辑</a>";
+                    html += "</td>";
+                }
+                //$("#bodyContent").html(html);
+                document.getElementById("bodyContent").innerHTML = html;
+
+                var btnGroupHtml = "";
+                var j=1;
+                var PageIndex=(currentPage-3>1?currentPage-3:1);
+
+                var tempMaxPageIndex = parseInt("@MaxPageIndex");
+                var temp2 = parseInt("@Math.Ceiling(count * 1.0 / pageSize)");
+
+                if(PageIndex != 1){
+                    btnGroupHtml+="<button type=\"button\" class=\"btn btn-default \" onclick=\"getList("+1 +")\">"+1 +"</button>";
+                    btnGroupHtml+="<button type=\"button\" class=\"btn btn-default \" onclick=\"getList("+(PageIndex-1) +")\">"+"..." +"</button>";
+
+                }
+                while(j<=(tempMaxPageIndex) && PageIndex<= temp2)
+                {
+                    if(PageIndex==currentPage)
+                    {
+                        btnGroupHtml+="<button type=\"button\" class=\"btn btn-default active \" onclick=\"getList("+PageIndex +")\">"+PageIndex +"</button>";
+                    }
+                    else
+                    {
+                        btnGroupHtml+="<button type=\"button\" class=\"btn btn-default \" onclick=\"getList("+PageIndex +")\">"+PageIndex +"</button>";
+                    }
+                    PageIndex++;
+                    j++;
+                }
+                if(PageIndex-1 != temp2){
+                    btnGroupHtml+="<button type=\"button\" class=\"btn btn-default \" onclick=\"getList("+(PageIndex) +")\">"+"..." +"</button>";
+                    btnGroupHtml+="<button type=\"button\" class=\"btn btn-default \" onclick=\"getList("+ temp2 +")\">"+temp2 +"</button>";
+                }
+                //$("#bodyContent").html(html);
+                //document.getElementById("bodyContent").innerHTML = html;
+                document.getElementById("pageBtnGroup").innerHTML=btnGroupHtml;
+            },
+            erroe: function () { }
+        });
+    }
+
+</script>
+
+
+
+
