@@ -748,10 +748,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Attribute\RoleAuthorizeAttribute.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\ProviderController.cs" />
     <Compile Include="Controllers\StockReportController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1004,6 +1007,8 @@
     <Content Include="Views\Provider\Index.cshtml" />
     <Content Include="Views\Provider\Update.cshtml" />
     <Content Include="Views\StockReport\Index.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

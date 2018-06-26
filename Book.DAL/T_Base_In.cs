@@ -54,7 +54,7 @@ namespace Book.DAL
             co.ConnectionString = connstring;
             co.Open();
             SqlCommand cm = new SqlCommand();
-            cm.CommandText = "delete from t_stock_inItems where headid in (" + ids + ");delete from t_stock_inhead where id in (" + ids + ") ; ";
+            cm.CommandText = "delete from t_stock_inhead where id in (" + ids + ") ; ";
             cm.Connection = co;
             int result = cm.ExecuteNonQuery();
             co.Close();

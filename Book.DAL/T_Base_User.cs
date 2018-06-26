@@ -26,18 +26,29 @@ namespace Book.DAL
             return result;
         }
 
-        public List<T_Base_User> GetList()
+        public List<Book.Model.T_Base_User> GetList(int CurrentPage, int PageSize)
         {
-            List<T_Base_User> lst = new List<T_Base_User>();
+            List<Book.Model.T_Base_User> lst = new List<Book.Model.T_Base_User>();
             SqlConnection co = new SqlConnection();
             co.ConnectionString = connstring;
             co.Open();
             SqlCommand cm = new SqlCommand();
             cm.Connection = co;
+            cm.CommandText = "select top " + PageSize + " * from  [T_Base_User] where  id not in (select top " + PageSize * (CurrentPage - 1) + " id from [T_Base_User] )";
+            SqlDataReader dr = cm.ExecuteReader();
+            while (dr.Read())
+            {
+                Book.Model.T_Base_User item = new Model.T_Base_User();
+                item.Id = Convert.ToInt32(dr["Id"]);
+                item.Password = Convert.ToString(dr["Password"]);
+                item.UserName = Convert.ToString(dr["UserName"]);
+                lst.Add(item);
+            }
 
+            dr.Close();
+            co.Close();
 
             return lst;
-
         }
     }
 }

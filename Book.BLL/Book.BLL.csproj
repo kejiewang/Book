@@ -42,6 +42,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="T_Base_Book.cs" />
     <Compile Include="T_Base_Provider.cs" />
+    <Compile Include="T_Base_User.cs" />
     <Compile Include="T_Stock_In.cs" />
     <Compile Include="T_Stock_Report.cs" />
   </ItemGroup>
