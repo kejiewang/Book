@@ -16,15 +16,18 @@ namespace Book.Web.Controllers
         // GET: Index
 
         [RoleAuthorize]
-        public ActionResult Index()
+        public ActionResult Index(String BookName = "", String Author = "")
         {
             Book.BLL.T_Base_Book bll = new BLL.T_Base_Book();
 
-            Book.Model.T_Base_Book_Page page = bll.GetListPage(1, PageSize);
+            Book.Model.T_Base_Book_Page page = bll.GetListPage(1, PageSize,BookName,Author);
             //List<Book.Model.T_Base_Book> lst = bll.GetAll();
             ViewBag.MaxPageIndex = MaxPageIndex;
 
             ViewBag.PageSize = PageSize;
+            
+            ViewBag.BookName = BookName;
+            ViewBag.Author = Author;
 
             ViewBag.lst = page.list;
             ViewBag.count = page.count;
@@ -89,11 +92,11 @@ namespace Book.Web.Controllers
 
         }
 
-        public JsonResult GetList(int currentPage)
+        public JsonResult GetList(int currentPage,String BookName = "", String Author = "")
         {
             Book.BLL.T_Base_Book bll = new BLL.T_Base_Book();
             //List<Book.Model.T_Base_Book> lst = bll.GetAll();
-            List<Book.Model.T_Base_Book> lst = bll.GetList(currentPage, PageSize);
+            List<Book.Model.T_Base_Book> lst = bll.GetList(currentPage, PageSize, BookName, Author);
             return Json(lst);
 
         }

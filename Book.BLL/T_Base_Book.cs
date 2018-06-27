@@ -43,11 +43,11 @@ namespace Book.BLL
             return result;
         }
 
-        public Book.Model.T_Base_Book_Page GetListPage(int CurrentPage, int PageSize)
+        public Book.Model.T_Base_Book_Page GetListPage(int CurrentPage, int PageSize, String BookName = "", String Author = "")
         {
             Book.DAL.T_Base_Book dal = new DAL.T_Base_Book();
-            List<Book.Model.T_Base_Book> list = dal.GetList(CurrentPage, PageSize);
-            int count = dal.GetCount();
+            List<Book.Model.T_Base_Book> list = dal.GetList(CurrentPage, PageSize,BookName, Author);
+            int count = dal.GetCount(BookName, Author);
             Book.Model.T_Base_Book_Page page = new Model.T_Base_Book_Page();
             page.list = list;
             page.count = count;
@@ -55,10 +55,10 @@ namespace Book.BLL
 
         }
 
-        public List<Book.Model.T_Base_Book> GetList(int currentPage, int pageSize)
+        public List<Book.Model.T_Base_Book> GetList(int currentPage, int pageSize,String BookName = "", String Author = "")
         {
             Book.DAL.T_Base_Book dal = new DAL.T_Base_Book();
-            List<Book.Model.T_Base_Book> lst = dal.GetList(currentPage, pageSize);
+            List<Book.Model.T_Base_Book> lst = dal.GetList(currentPage, pageSize, BookName, Author);
             return lst;
         }
 

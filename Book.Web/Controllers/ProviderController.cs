@@ -22,11 +22,11 @@ namespace Book.Web.Controllers
 
             return Json(lst);
         }
-        public ActionResult Index()
+        public ActionResult Index(String Name = "")
         {
             Book.BLL.T_Base_Provider bll = new BLL.T_Base_Provider();
 
-            Book.Model.T_Base_Provider_Page page = bll.GetListPage(1, PageSize);
+            Book.Model.T_Base_Provider_Page page = bll.GetListPage(1, PageSize,Name);
             //List<Book.Model.T_Base_Provider> lst = bll.GetAll();
             ViewBag.MaxPageIndex = MaxPageIndex;
 
@@ -91,11 +91,13 @@ namespace Book.Web.Controllers
 
         }
 
-        public JsonResult GetList(int currentPage)
+        public JsonResult GetList(int currentPage,String Name = "")
         {
             Book.BLL.T_Base_Provider bll = new BLL.T_Base_Provider();
             //List<Book.Model.T_Base_Provider> lst = bll.GetAll();
-            List<Book.Model.T_Base_Provider> lst = bll.GetList(currentPage, PageSize);
+            List<Book.Model.T_Base_Provider> lst = bll.GetList(currentPage, PageSize, Name);
+
+            ViewBag.Name = Name;
             return Json(lst);
 
         }

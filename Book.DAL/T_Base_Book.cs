@@ -121,13 +121,13 @@ namespace Book.DAL
             return result;
         }
 
-        public int GetCount()
+        public int GetCount(String BookName = "", String Author = "")
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = "server=10.132.239.3;uid=sa;pwd=Jsj123456;database=15211160113";
             co.Open();
             SqlCommand cm = new SqlCommand();
-            cm.CommandText = "select count(1) from t_base_book";
+            cm.CommandText = "select count(1) from t_base_book where BookName like '%"+BookName+"%' and Author like '%"+Author+"%'";
             cm.Connection = co;
             object result = cm.ExecuteScalar();
             co.Close();
@@ -135,14 +135,14 @@ namespace Book.DAL
 
         }
 
-        public List<Book.Model.T_Base_Book> GetList(int currentPage, int pageSize)
+        public List<Book.Model.T_Base_Book> GetList(int currentPage, int pageSize, String BookName = "", String Author = "")
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = "server=10.132.239.3;uid=sa;pwd=Jsj123456;database=15211160113";
             co.Open();
             SqlCommand cm = new SqlCommand();
             cm.Connection = co;
-            cm.CommandText = "select top " + pageSize + " * from t_base_book where id not in (select top " + pageSize * (currentPage - 1) + " id from t_base_book)";
+            cm.CommandText = "select top " + pageSize + " * from t_base_book where id not in (select top " + pageSize * (currentPage - 1) + " id from t_base_book where BookName like \'%" + BookName + "%\' and Author like \'%" + Author + "%\') and BookName like \'%" + BookName + "%\' and Author like \'%" + Author + "%\'";
 
             SqlDataReader dr = cm.ExecuteReader();
             List<Book.Model.T_Base_Book> lst = new List<Model.T_Base_Book>();

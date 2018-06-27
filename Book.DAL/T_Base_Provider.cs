@@ -113,13 +113,13 @@ namespace Book.DAL
             return result;
         }
 
-        public int GetCount()
+        public int GetCount(String Name = "")
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = "server=10.132.239.3;uid=sa;pwd=Jsj123456;database=15211160113";
             co.Open();
             SqlCommand cm = new SqlCommand();
-            cm.CommandText = "select count(1) from t_base_provider";
+            cm.CommandText = "select count(1) from t_base_provider where Name like '%"+Name+"%'";
             cm.Connection = co;
             object result = cm.ExecuteScalar();
             co.Close();
@@ -127,14 +127,14 @@ namespace Book.DAL
 
         }
 
-        public List<Book.Model.T_Base_Provider> GetList(int currentPage, int pageSize)
+        public List<Book.Model.T_Base_Provider> GetList(int currentPage, int pageSize,String Name = "")
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = "server=10.132.239.3;uid=sa;pwd=Jsj123456;database=15211160113";
             co.Open();
             SqlCommand cm = new SqlCommand();
             cm.Connection = co;
-            cm.CommandText = "select top " + pageSize + " * from t_base_provider where id not in (select top " + pageSize * (currentPage - 1) + " id from t_base_provider)";
+            cm.CommandText = "select top " + pageSize + " * from t_base_provider where id not in (select top " + pageSize * (currentPage - 1) + " id from t_base_provider where Name like '%"+Name+"%') and Name like '%"+Name+"%'";
 
             SqlDataReader dr = cm.ExecuteReader();
             List<Book.Model.T_Base_Provider> lst = new List<Model.T_Base_Provider>();
