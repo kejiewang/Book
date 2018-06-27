@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+using Book.Web.Attribute;
 
 namespace Book.Web.Controllers
 {
@@ -12,6 +14,8 @@ namespace Book.Web.Controllers
         int PageSize = 5;
         int MaxPageIndex = 8;
         // GET: Index
+
+        [RoleAuthorize]
         public ActionResult Index()
         {
             Book.BLL.T_Base_Book bll = new BLL.T_Base_Book();

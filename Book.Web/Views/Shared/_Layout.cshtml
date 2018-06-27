@@ -1,4 +1,25 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var LoginName = "";
+    List<Book.Model.T_Base_Menu> lst = new List<Book.Model.T_Base_Menu>();
+    if (HttpContext.Current.User == null)
+    {
+        return;
+    }
+    else
+    {
+        var ticket = (HttpContext.Current.User.Identity as FormsIdentity).Ticket;
+        LoginName = ticket.Name;
+        var RoleId = ticket.Version;
+        //根据Id去获取相关的菜单
+        Book.BLL.T_Base_Home bllHome = new Book.BLL.T_Base_Home();
+        lst = bllHome.GetMenuList(RoleId);
+        
+    }
+    
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -202,80 +223,37 @@
                 <ul class="sidebar-menu" id="nav-accordion">
 
                     <p class="centered"><a href="profile.html"><img src="/assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
-                    <h5 class="centered">Marcel Newman</h5>
+                    <h5 class="centered">@LoginName</h5>
+                    @{
+                        foreach (Book.Model.T_Base_Menu item in lst.Where(m => m.ParentId == 0 && m.Type == 1))
+                        {
+                            
+                            <li class="sub-menu">
+                                <a href="javascript:;">
+                                    <i class="fa fa-desktop"></i>
+                                    <span>@item.Display</span>
+                                </a>
+                                <ul class="sub">
+                                    @foreach (Book.Model.T_Base_Menu subMenu in lst.Where(m => m.ParentId == item.Id && m.Type == 2))
+                                    {
+                                        <li><a href="/@subMenu.Controller/@subMenu.Action">@subMenu.Display</a></li>
+                                    }
+
+                                </ul>
+                            </li>
+                        }
+                        
+                    }
 
 
-
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-desktop"></i>
-                            <span>图书信息</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="/index/index">列表显示</a></li>
-                            <li><a href="/Index/Add">增加图书</a></li>
-
-                        </ul>
-                    </li>
-
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-cogs"></i>
-                            <span>Components</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="calendar.html">Calendar</a></li>
-                            <li><a href="gallery.html">Gallery</a></li>
-                            <li><a href="todo_list.html">Todo List</a></li>
-                        </ul>
-                    </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-book"></i>
-                            <span>Extra Pages</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="blank.html">Blank Page</a></li>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="lock_screen.html">Lock Screen</a></li>
-                        </ul>
-                    </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-tasks"></i>
-                            <span>Forms</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="form_component.html">Form Components</a></li>
-                        </ul>
-                    </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-th"></i>
-                            <span>Data Tables</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="basic_table.html">Basic Table</a></li>
-                            <li><a href="responsive_table.html">Responsive Table</a></li>
-                        </ul>
-                    </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class=" fa fa-bar-chart-o"></i>
-                            <span>Charts</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="morris.html">Morris</a></li>
-                            <li><a href="chartjs.html">Chartjs</a></li>
-                        </ul>
-                    </li>
+                    
 
                 </ul>
                 <!-- sidebar menu end-->
             </div>
         </aside>
         <!--sidebar end-->
-        <div class="copyrights">Collect from <a href="http://www.cssmoban.com/">网页模板</a></div>
+        <div class="copyrights">Collect from <a href="http://www.cssmoban.com/">Koje</a></div>
 
         <!-- **********************************************************************************************************************************************************
         MAIN CONTENT
