@@ -8,9 +8,9 @@ namespace Book.BLL
     public class T_Stock_In
     {
         public Book.DAL.T_Stock_In dal = new DAL.T_Stock_In();
-        public List<Book.Model.T_Stock_In> GetList(int CurrentPage, int PageSize)
+        public List<Book.Model.T_Stock_In> GetList(int CurrentPage, int PageSize,String search = "")
         {
-            return dal.GetList(CurrentPage, PageSize);
+            return dal.GetList(CurrentPage, PageSize,search);
         }
 
         public Book.Model.T_Stock_In GetModel(int HeadId)
@@ -19,10 +19,10 @@ namespace Book.BLL
             return dal.GetModel(HeadId);
         }
 
-        public int Count()
+        public int Count(String search = "")
         {
 
-            return dal.Count();
+            return dal.Count(search);
         }
 
         public int Delete(string[] ids)

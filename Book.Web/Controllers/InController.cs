@@ -32,12 +32,12 @@ namespace Book.Web.Controllers
         //    lst = bll.GetList(1, 10);
         //    return Json(lst);
         //}
-        public JsonResult GetList(int pageSize, int pageIndex)
+        public JsonResult GetList(int pageSize, int pageIndex, String search = "")
         {
             Book.BLL.T_Stock_In bll = new BLL.T_Stock_In();
             List<Book.Model.T_Stock_In> lst = new List<Model.T_Stock_In>();
-            lst = bll.GetList(pageIndex, pageSize);
-            int count = bll.Count();
+            lst = bll.GetList(pageIndex, pageSize,search);
+            int count = bll.Count(search);
             return Json(new { total = count, rows = lst });
 
         }

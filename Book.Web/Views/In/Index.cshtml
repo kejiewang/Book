@@ -120,7 +120,8 @@
         function queryParams(params) {
             return {
                 pageSize: params.pageSize,
-                pageIndex: params.pageNumber
+                pageIndex: params.pageNumber,   
+                search:params.searchText
             }
         }
         $("#btn_delete").click(function () {

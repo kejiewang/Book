@@ -11,7 +11,7 @@ namespace Book.DAL
     public class T_Stock_In
     {
         public string connstring = "server=10.132.239.3;uid=sa;pwd=Jsj123456;database=15211160113";
-        public List<Book.Model.T_Stock_In> GetList(int CurrentPage, int PageSize)
+        public List<Book.Model.T_Stock_In> GetList(int CurrentPage, int PageSize,String search = "")
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = connstring;
@@ -19,7 +19,8 @@ namespace Book.DAL
             SqlCommand cm = new SqlCommand();
             cm.Connection = co;
             //cm.CommandText = "select * from t_base_book";
-            cm.CommandText = "select top " + PageSize + " * from  [V_InHead_Provider] where  id not in (select top " + PageSize * (CurrentPage - 1) + " id from [V_InHead_Provider] )";
+            search = "'%" + search + "%'";
+            cm.CommandText = "select top " + PageSize + " * from  [V_InHead_Provider] where id not in (select top " + PageSize * (CurrentPage - 1) + " id from [V_InHead_Provider] where (username like "+search+" or name like "+search+")) and (username like "+search+" or name like "+search+")";
             SqlDataReader dr = cm.ExecuteReader();
             List<Book.Model.T_Stock_In> lst = new List<Model.T_Stock_In>();
             while (dr.Read())
@@ -60,14 +61,15 @@ namespace Book.DAL
             co.Close();
             return result;
         }
-        public int Count()
+        public int Count(String search = "")
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = connstring;
             co.Open();
             SqlCommand cm = new SqlCommand();
             cm.Connection = co;
-            cm.CommandText = "select count(*) from T_Stock_InHead";
+            search = "'%" + search + "%'";
+            cm.CommandText = "select count(*) from V_InHead_Provider where name like "+search+" or username like "+search+"";
             int count = (int)cm.ExecuteScalar();
             return count;
 
