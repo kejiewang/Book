@@ -1,12 +1,14 @@
 ﻿@{
     var LoginName = "";
     List<Book.Model.T_Base_Menu> lst = new List<Book.Model.T_Base_Menu>();
+    bool flag = false;
     if (HttpContext.Current.User == null)
     {
         return;
     }
     else
     {
+        flag = true;
         var ticket = (HttpContext.Current.User.Identity as FormsIdentity).Ticket;
         LoginName = ticket.Name;
         var RoleId = ticket.Version;
@@ -225,7 +227,11 @@
                     <p class="centered"><a href="profile.html"><img src="/assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
                     <h5 class="centered">@LoginName</h5>
                     @{
-                        foreach (Book.Model.T_Base_Menu item in lst.Where(m => m.ParentId == 0 && m.Type == 1))
+                        if (flag == true)
+                        {
+                            
+                        
+                        foreach (  Book.Model.T_Base_Menu item in lst.Where(m => m.ParentId == 0 && m.Type == 1))
                         {
                             
                             <li class="sub-menu">
@@ -241,6 +247,7 @@
 
                                 </ul>
                             </li>
+                        }
                         }
                         
                     }
@@ -296,7 +303,7 @@
     <!--script for this page-->
     <script src="/assets/js/sparkline-chart.js"></script>
     <script src="/assets/js/zabuto_calendar.js"></script>
-    @RenderSection("js", false)
+    
     <script type="text/javascript">
         $(document).ready(function () {
         var unique_id = $.gritter.add({
@@ -317,9 +324,9 @@
         return false;
         });
 
-
+        
     </script>
-
+    @RenderSection("js", false)
     <script type="application/javascript">
         $(document).ready(function () {
             $("#date-popover").popover({html: true, trigger: "manual"});

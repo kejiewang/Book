@@ -1,27 +1,30 @@
-﻿@{
+﻿
+@{
     Layout = "/Views/Shared/_Layout.cshtml";
+    Book.Model.T_Stock_InHead item = ViewBag.item;
 }
 
 <section id="main-content">
     <section class="wrapper">
-        <h3><i class="fa fa-angle-right"></i> 入库单增加</h3>
+        <h3><i class="fa fa-angle-right"></i> 入库单编辑</h3>
         <div class="row mt">
             <div class="col-lg-12">
                 <div class="content-panel">
-                    @*<h3><i class="fa fa-angle-right"></i> 入库单列表</h3>*@
-                    @*<h4><i class="fa fa-angle-right"></i> Responsive Table</h4>*@
+                  
                     <section id="unseen">
                         <form class="form-horizontal style-form" method="get">
                             <div class="form-group ">
                                 <label class="col-sm-2 col-sm-2 control-label">经手人</label>
                                 <div class="col-sm-10">
-                                    <input type="text" id="txtUserName" class="form-control">
+                                    <input type="number" id="BookHeadId" class="hidden" value="@item.Id"/>
+
+                                    <input type="text" id="txtUserName" class="form-control" value=@item.UserName>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">供应商</label>
                                 <div class="col-sm-10">
-                                    <input id="Provider" type="text" class="form-control">
+                                    <input id="Provider" type="text" class="form-control" value=@item.Provider.Name real-value = @item.ProviderId>
 
 
                                 </div>
@@ -29,7 +32,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">时间</label>
                                 <div class="col-sm-10">
-                                    <input type="date" id="txtCreateTime" class="form-control ">
+                                    <input type="text" id="txtCreateTime" class="form-control " value=@item.CreateTime>
                                 </div>
                             </div>
 
@@ -60,14 +63,14 @@
     <script src="~/assets/bootstrap-table-editable.js"></script>
 
     <script>
-
+        var Id = parseInt("@item.Id");
         $('#InList').bootstrapTable({
-            //url: '/in/GetList',
-            //method: 'post',
-            //dataType: "json",
-            // dataField: "data",
-            data: [],
-
+            url: '/in/GetModel2',
+            method: 'post',
+            dataType: "json",
+            dataField: "data",
+            //data: [],
+            
             classes: 'table',//边框
             undefinedText: '',//当数据为 undefined 时显示的字符
             pagination: true,//启动分页
@@ -75,6 +78,8 @@
             pageNumber: 1,
             pageSize: 5,
             pageList: [1, 5, 10, 20],
+            queryParams: { HeadId: Id },
+            ajaxOptions: { HeadId: Id },
             striped: true,
             showColumns: false,  //显示下拉框勾选要显示的列
             showRefresh: false,  //显示刷新按钮
@@ -102,11 +107,11 @@
                 title: "BookId",
                 align: 'center',
                 visible: false
-            },{
+            }, {
                 field: 'Price',
                 title: 'Price',
                 align: 'center',
-                visible:false
+                visible: false
             },
             {
                 field: 'SN',
@@ -130,7 +135,7 @@
                 title: '数量',
                 align: 'center',
                 editable: {
-                    type:'text'
+                    type: 'text'
                 }
 
             },
@@ -175,7 +180,7 @@
     </script>
     <script>
         var row = {
-            Id:""
+            Id: ""
         }
     </script>
     <script>
@@ -197,7 +202,7 @@
             },
             formatItem: function (item) {
                 //row = item;
-                return item["Name"] ;
+                return item["Name"];
             },
             setValue: function (item) {
                 var tmpTest = item;
@@ -237,13 +242,13 @@
             var tmp = $("#txtAddItem").attr("real-value");
             var id = parseInt(tmp);
             var name = $("#txtAddItem").attr("value");
-            var item ={};
+            var item = {};
             $.ajax({
-                async:false,
-                type:"post",
+                async: false,
+                type: "post",
                 url: "/Index/GetFind",
-                data:{
-                    SN:tmp
+                data: {
+                    SN: tmp
                 },
                 dataType: "json",
                 success: function (data) {
@@ -253,7 +258,7 @@
             });
 
             if (id != "") {
-                $("#InList").bootstrapTable('insertRow', { index: 0, row: { Id: 0, BookId: id,SN: item.SN, BookName: name, PressName:item.PressName, Amount: "1", Discount: "1" ,Price:item.Price} });
+                $("#InList").bootstrapTable('insertRow', { index: 0, row: { Id: 0, BookId: id, SN: item.SN, BookName: name, PressName: item.PressName, Amount: "1", Discount: "1", Price: item.Price } });
                 $("#txtAddItem").val("");
                 $("#txtAddItem").attr("real-value", "");
             }
@@ -262,7 +267,7 @@
 
         function DeleteItem(id) {
             var ids = [id];
-           // var id = parseInt(ids);
+            // var id = parseInt(ids);
             $('#InList').bootstrapTable('remove', {
                 field: 'BookId',
                 values: ids
@@ -272,42 +277,41 @@
     </script>
 
     <script>
-    $("#btnSave").click(function () {
-        var head = {
-            UserName: $("#txtUserName").val(),
-            CreateTime: $("#txtCreateTime").val(),
-            ProviderId: $("#Provider").attr("real-value")
-        };
-        var items = $("#InList").bootstrapTable("getData");
+        $("#btnSave").click(function () {
+            var head = {
+                Id: $("#BookHeadId").val(),
+                UserName: $("#txtUserName").val(),
+                CreateTime: $("#txtCreateTime").val(),
+                ProviderId: $("#Provider").attr("real-value")
+            };
+            var items = $("#InList").bootstrapTable("getData");
 
 
-        $.ajax({
+            $.ajax({
 
-            type: "POST",
-            url: "/In/AddSave",
-            data: {
-                Head: head,
-                Items: items,
+                type: "POST",
+                url: "/In/EditSave",
+                data: {
+                    Head: head,
+                    Items: items,
 
-            },
-            dataType: 'JSON',
-            success: function (data) {
-                //显示删除成功
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    //显示删除成功
 
-                window.location.href = "/in/index";
-                return;
-                //if (data.Code == 1) {
-                //    $('#InList').bootstrapTable('remove',
-                //        {
-                //            field: 'Id',
-                //            values: [0]
-                //        });
-                //} else {
-                //    alert("删除失败");
-                //}
-            }
+                    window.location.href = "/in/index";
+                    //if (data.Code == 1) {
+                    //    $('#InList').bootstrapTable('remove',
+                    //        {
+                    //            field: 'Id',
+                    //            values: [0]
+                    //        });
+                    //} else {
+                    //    alert("删除失败");
+                    //}
+                }
+            });
         });
-    });
     </script>
-
 }

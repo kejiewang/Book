@@ -39,14 +39,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditItem.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="T_Base_Admin.cs" />
     <Compile Include="T_Base_Book.cs" />
+    <Compile Include="T_Base_Customer.cs" />
     <Compile Include="T_Base_Menu.cs" />
     <Compile Include="T_Base_Provider.cs" />
     <Compile Include="T_Base_User.cs" />
     <Compile Include="T_Stock_In.cs" />
+    <Compile Include="T_Stock_Out.cs" />
     <Compile Include="T_Stock_Report.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

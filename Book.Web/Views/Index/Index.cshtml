@@ -21,7 +21,7 @@
                
                 <div class="content-panel">
                      <!--查询框-->
-                    <form class="form-inline" style="padding-left:50px" method="post" action="/index/index">
+                    <form id ="form" class="form-inline" style="padding-left:50px" method="post" action="/index/index">
                         <div class="form-group">
                             <label for="exampleInputName2">书名</label>
                             <input type="text" class="form-control" id="BookName" name="BookName" placeholder="" value=@BookName>
@@ -30,9 +30,10 @@
                             <label for="exampleInputName2">作者</label>
                             <input type="text" class="form-control" id="Author" name="Author" placeholder="" value=@Author>
                         </div>
-                        <button type="submit" class="btn btn-default" onclick="getList(1)" value="查询1"></button>
-                        <input type="submit" class="btn btn-default"value="查询"></input>
+                       
+                     
                     </form>
+                  
                     <h4><i class="fa fa-angle-right"></i>书籍列表 </h4>
                     <section id="unseen">
                         <table class="table table-bordered table-striped table-condensed">
@@ -122,8 +123,10 @@
 </div>
 
 @section js{
-    <script type="text/javascript>
+
+    <script>
     currentId=0;
+    
     function deleteJudge(Id)
     {
     currentId=Id;
@@ -153,13 +156,24 @@
 
     }
 
+    $("#BookName").on('input propertychange keydown change',function(){
+        console.log("hello");
+        getList(1);
+    })
+    $("#Author").on('input propertychange keydown change',function(){
+        console.log("hello");
+        getList(1);
+    })
 
 
     </script>
 
+
 }
 
 <script type="text/javascript">
+    
+
     function getList(currentPage) {
         var bookName = $("#BookName").val();
         var author = $("#Author").val();
@@ -167,8 +181,11 @@
             url: "/index/GetList",
             data: {currentPage:currentPage, BookName:bookName, Author:author},//"currentPage=" + currentPage,
             type: "post",
-            success: function (result) {
+            success: function (data) {
                 // alert(result[0].BookName);
+                var result = data.result.Data;
+                var Count = data.count;
+                console.log(data);
                 var html = "";
                 for (var i = 0; i < result.length; i++) {
                     html += "<tr id=\"tr_" + result[i].Id + "\">";
@@ -180,7 +197,7 @@
                     html += "<td>" + result[i].Version + "</td>";
                     html += "<td>" + result[i].Price + "</td>";
                     html += "<td>";
-                    html += "  <a href=\"javascript:bookDeletePre(" + result[i].Id + ")\">删除</a>";
+                    html += "  <a href=\"javascript:deleteJudge(" + result[i].Id + ")\">删除</a>";
                     html += "  <a href=\"/index/update?Id=" + result[i].Id + "\">编辑</a>";
                     html += "</td>";
                 }
@@ -193,7 +210,9 @@
 
                 var tempMaxPageIndex = parseInt("@MaxPageIndex");
                 var temp2 = parseInt("@Math.Ceiling(count * 1.0 / pageSize)");
-
+                tt = parseInt("@pageSize");
+                temp2 = Math.ceil(Count * 1.0 / tt);
+                console.log(temp2);
                 if(PageIndex != 1){
                     btnGroupHtml+="<button type=\"button\" class=\"btn btn-default \" onclick=\"getList("+1 +")\">"+1 +"</button>";
                     btnGroupHtml+="<button type=\"button\" class=\"btn btn-default \" onclick=\"getList("+(PageIndex-1) +")\">"+"..." +"</button>";
@@ -220,7 +239,7 @@
                 //document.getElementById("bodyContent").innerHTML = html;
                 document.getElementById("pageBtnGroup").innerHTML=btnGroupHtml;
             },
-            erroe: function () { }
+            error: function () { }
         });
     }
 

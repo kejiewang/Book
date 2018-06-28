@@ -77,5 +77,12 @@ namespace Book.BLL
 
             //throw new NotImplementedException();
         }
+
+        public int GetCount(String BookName = "", String Author = "")
+        {
+            Book.DAL.T_Base_Book dal = new DAL.T_Base_Book();
+            int count = dal.GetCount(BookName, Author);
+            return count;
+        }
     }
 }

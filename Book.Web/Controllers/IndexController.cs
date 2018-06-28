@@ -97,7 +97,10 @@ namespace Book.Web.Controllers
             Book.BLL.T_Base_Book bll = new BLL.T_Base_Book();
             //List<Book.Model.T_Base_Book> lst = bll.GetAll();
             List<Book.Model.T_Base_Book> lst = bll.GetList(currentPage, PageSize, BookName, Author);
-            return Json(lst);
+
+            //json(new { lst, count });
+            int c = bll.GetCount(BookName, Author);
+            return Json(new { count = c,result=Json(lst)});
 
         }
 

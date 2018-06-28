@@ -43,5 +43,11 @@ namespace Book.BLL
             inStock.Head.TotalMoney = totalMoney;
             return dal.Add(inStock);
         }
+
+        public Book.Model.T_Stock_InHead GetHead(int Id)
+        {
+
+            return dal.GetHead(Id);
+        }
     }
 }

@@ -98,11 +98,12 @@ namespace Book.DAL
                 Book.Model.T_Base_Book book = new Model.T_Base_Book();
                 book.Author = Convert.ToString(dr["Author"]);
                 book.BookName = Convert.ToString(dr["BookName"]);
-                book.Id = Convert.ToInt32(dr["Id"]);
+                book.Id = Convert.ToInt32(dr["BookId"]);
                 book.PressName = Convert.ToString(dr["PressName"]);
                 book.Price = Convert.ToDecimal(dr["Price"]);
                 book.SN = Convert.ToString(dr["SN"]);
                 book.Version = Convert.ToInt32(dr["Version"]);
+                item.BookId = book.Id;
                 item.Book = book;
                 item.Amount = Convert.ToInt32(dr["Amount"]);
                 stockIn.Items.Add(item);
@@ -154,6 +155,38 @@ namespace Book.DAL
                 co.Close();
             }
             return false;
+        }
+
+
+        /// <summary>
+        /// 根据表头获取相应的对象
+        /// </summary>
+        /// <param name="Id">图书的Id</param>
+        /// <returns></returns>
+        public Model.T_Stock_InHead GetHead(int Id)
+        {
+            SqlConnection co = new SqlConnection();
+            co.ConnectionString = connstring;
+            co.Open();
+            Book.Model.T_Stock_InHead item = new Model.T_Stock_InHead();
+            SqlCommand cm = new SqlCommand();
+            cm.CommandText = "select * from V_InHead_Provider where Id = @headid";
+            cm.Parameters.AddWithValue("@headid", Id);
+            cm.Connection = co;
+            item.Provider = new Model.T_Base_Provider();
+            SqlDataReader dr = cm.ExecuteReader();
+            while (dr.Read())
+            {
+                item.Id = Id;
+                item.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
+                item.ProviderId = Convert.ToInt32(dr["ProviderId"]);
+                item.UserName = Convert.ToString(dr["UserName"]);
+                item.Provider.Name = Convert.ToString(dr["Name"]);
+            }
+            dr.Close();
+            co.Close();
+
+            return item;
         }
     }
 }
