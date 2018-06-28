@@ -3,13 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Security;
+using Book.Web.Attribute;
+
+
 
 namespace Book.Web.Controllers
 {
+
+    [Authorize]
     public class OutController : Controller
     {
         //
         // GET: /Out/
+        [RoleAuthorize]
         public ActionResult Index()
         {
             return View();

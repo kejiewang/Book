@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Book.Web.Attribute;
+using System.Security;
 
 
 namespace Book.Web.Controllers
 {
+    [Authorize]
     public class InController : Controller
     {
         //

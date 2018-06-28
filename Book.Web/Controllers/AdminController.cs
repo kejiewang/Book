@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Security;
+
 
 namespace Book.Web.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         //
         // GET: /Admin/
         int PageSize = 5;
         int MaxPageIndex = 8;
-
+        
         public JsonResult GetSearch(string Name = "", int matchCount = 10)
         {
             Name = Name.Trim();

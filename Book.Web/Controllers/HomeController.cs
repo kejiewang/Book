@@ -14,6 +14,22 @@ namespace Book.Web.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            Book.BLL.T_Base_Admin admin = new BLL.T_Base_Admin();
+            ViewBag.admin = admin.GetCount();
+
+            Book.BLL.T_Base_Book book = new BLL.T_Base_Book();
+            ViewBag.book = book.GetCount();
+
+            Book.BLL.T_Base_Provider provider = new BLL.T_Base_Provider();
+            ViewBag.provider = provider.GetCount();
+
+            Book.BLL.T_Base_Customer customer = new BLL.T_Base_Customer();
+            ViewBag.customer = provider.GetCount();
+
+            Book.BLL.T_Stock_Report stock = new BLL.T_Stock_Report();
+            ViewBag.stock = stock.GetCount();
+
+
             return View();
         }
 

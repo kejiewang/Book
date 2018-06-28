@@ -6,8 +6,11 @@ using System.Web.Mvc;
 using System.Web.Security;
 using Book.Web.Attribute;
 
+
+
 namespace Book.Web.Controllers
 {
+    [Authorize]
     public class IndexController : Controller
     {
 
