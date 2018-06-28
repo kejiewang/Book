@@ -749,10 +749,12 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Attribute\RoleAuthorizeAttribute.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
+    <Compile Include="Controllers\OutController.cs" />
     <Compile Include="Controllers\ProviderController.cs" />
     <Compile Include="Controllers\StockReportController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -1015,6 +1017,12 @@
     <Content Include="Views\Customer\Index.cshtml" />
     <Content Include="Views\Customer\Add.cshtml" />
     <Content Include="Views\Customer\Update.cshtml" />
+    <Content Include="Views\Out\Index.cshtml" />
+    <Content Include="Views\Out\Add.cshtml" />
+    <Content Include="Views\Out\Edit.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\Add.cshtml" />
+    <Content Include="Views\Admin\Update.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

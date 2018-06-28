@@ -18,8 +18,8 @@ namespace Book.Model
         public string UserName { get; set; }
         public DateTime CreateTime { get; set; }
         public decimal TotalMoney { get; set; }
-        public int ProviderId { get; set; }
-        public T_Base_Provider Provider { get; set; }
+        public int CustomerId { get; set; }
+        public T_Base_Customer Customer { get; set; }
     }
 
     public class T_Stock_OutItems

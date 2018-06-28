@@ -2,47 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 
 namespace Book.DAL
 {
-
-    public class T_Stock_In
+    public class T_Stock_Out
     {
         public string connstring = "server=10.132.239.3;uid=sa;pwd=Jsj123456;database=15211160113";
-        public List<Book.Model.T_Stock_In> GetList(int CurrentPage, int PageSize,String search = "")
+
+        public List<Book.Model.T_Stock_Out> GetList(int CurrentPage, int PageSize, String search = "")
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = connstring;
             co.Open();
             SqlCommand cm = new SqlCommand();
             cm.Connection = co;
-            //cm.CommandText = "select * from t_base_book";
+      
             search = "'%" + search + "%'";
-            cm.CommandText = "select top " + PageSize + " * from  [V_InHead_Provider] where id not in (select top " + PageSize * (CurrentPage - 1) + " id from [V_InHead_Provider] where (username like "+search+" or name like "+search+")) and (username like "+search+" or name like "+search+")";
+            cm.CommandText = "select top " + PageSize + " * from  [V_OutHead_Customer] where id not in (select top " + PageSize * (CurrentPage - 1) + " id from [V_OutHead_Customer] where (username like " + search + " or name like " + search + ")) and (username like " + search + " or name like " + search + ")";
             SqlDataReader dr = cm.ExecuteReader();
-            List<Book.Model.T_Stock_In> lst = new List<Model.T_Stock_In>();
+            
+            List<Book.Model.T_Stock_Out> lst = new List<Model.T_Stock_Out>();
             while (dr.Read())
             {
-                Book.Model.T_Stock_In inStock = new Model.T_Stock_In();
-
-                Book.Model.T_Stock_InHead head = new Model.T_Stock_InHead();
-                inStock.Id = head.Id = Convert.ToInt32(dr["Id"]);
-                inStock.CreateTime = head.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
-                inStock.ProviderId = head.ProviderId = Convert.ToInt32(dr["ProviderId"]);
-                inStock.TotalMoney = head.TotalMoney = Convert.ToDecimal(dr["TotalMoney"]);
-                inStock.UserName = head.UserName = Convert.ToString(dr["UserName"]);
-                Book.Model.T_Base_Provider provider = new Model.T_Base_Provider();
-                provider.Id = Convert.ToInt32(dr["Id"]);
-                provider.Name = Convert.ToString(dr["Name"]);
-                provider.Tel = Convert.ToString(dr["Tel"]);
-                provider.Fax = Convert.ToString(dr["Fax"]);
-                provider.Memo = Convert.ToString(dr["Memo"]);
-                head.Provider = provider;
-                inStock.Head = head;
-                inStock.Items = null;
-                lst.Add(inStock);
+                Book.Model.T_Stock_Out outStock = new Model.T_Stock_Out();
+                outStock.Customer = new Model.T_Base_Customer();
+                Book.Model.T_Stock_OutHead head = new Model.T_Stock_OutHead();
+                outStock.Id = head.Id = Convert.ToInt32(dr["Id"]);
+                head.Customer = new Model.T_Base_Customer();
+                outStock.CreateTime = head.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
+                outStock.Customer.Id = head.Customer.Id = Convert.ToInt32(dr["CustomerId"]);
+                outStock.TotalMoney = head.TotalMoney = Convert.ToDecimal(dr["TotalMoney"]);
+                outStock.UserName = head.UserName = Convert.ToString(dr["UserName"]);
+                Book.Model.T_Base_Customer Customer = new Model.T_Base_Customer();
+                Customer.Id = Convert.ToInt32(dr["Id"]);
+                Customer.Name = Convert.ToString(dr["Name"]);
+                Customer.Tel = Convert.ToString(dr["Tel"]);
+                Customer.Fax = Convert.ToString(dr["Fax"]);
+                Customer.Memo = Convert.ToString(dr["Memo"]);
+                head.Customer = Customer;
+                outStock.Head = head;
+                outStock.Items = null;
+                lst.Add(outStock);
             }
             dr.Close();
             co.Close();
@@ -55,7 +58,7 @@ namespace Book.DAL
             co.ConnectionString = connstring;
             co.Open();
             SqlCommand cm = new SqlCommand();
-            cm.CommandText = "delete from t_stock_inhead where id in (" + ids + ") ; ";
+            cm.CommandText = "delete from t_stock_outhead where id in (" + ids + ") ; ";
             cm.Connection = co;
             int result = cm.ExecuteNonQuery();
             co.Close();
@@ -70,30 +73,29 @@ namespace Book.DAL
             SqlCommand cm = new SqlCommand();
             cm.Connection = co;
             search = "'%" + search + "%'";
-            cm.CommandText = "select count(*) from V_InHead_Provider where name like "+search+" or username like "+search+"";
+            cm.CommandText = "select count(*) from V_OutHead_Customer where name like " + search + " or username like " + search + "";
             int count = (int)cm.ExecuteScalar();
             return count;
-
         }
 
-        public Book.Model.T_Stock_In GetModel(int HeadId)
+        public Book.Model.T_Stock_Out GetModel(int HeadId)
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = connstring;
             co.Open();
 
-            Book.Model.T_Stock_In stockIn = new Model.T_Stock_In();
+            Book.Model.T_Stock_Out stockIn = new Model.T_Stock_Out();
             //stockIn.Head.Id = HeadId;
             stockIn.Head = null;
-            stockIn.Items = new List<Model.T_Stock_InItems>();
+            stockIn.Items = new List<Model.T_Stock_OutItems>();
             SqlCommand cm = new SqlCommand();
-            cm.CommandText = "select * from V_InItem_Book where headid = @headid";
+            cm.CommandText = "select * from V_OutItem_Book where headid = @headid";
             cm.Parameters.AddWithValue("@headid", HeadId);
             cm.Connection = co;
             SqlDataReader dr = cm.ExecuteReader();
             while (dr.Read())
             {
-                Book.Model.T_Stock_InItems item = new Model.T_Stock_InItems();
+                Book.Model.T_Stock_OutItems item = new Model.T_Stock_OutItems();
                 item.HeadId = HeadId;
                 item.Id = Convert.ToInt32(dr["Id"]);
                 item.Discount = Convert.ToDecimal(dr["Discount"]);
@@ -115,7 +117,7 @@ namespace Book.DAL
             return stockIn;
         }
 
-        public bool Add(Model.T_Stock_In inStock)
+        public bool Add(Model.T_Stock_Out inStock)
         {
             //throw new NotImplementedException();
             SqlConnection co = new SqlConnection();
@@ -128,17 +130,17 @@ namespace Book.DAL
             try
             {
                 cm.Parameters.Clear();
-                cm.CommandText = "insert into t_stock_inhead (UserName,CreateTime,ProviderId,TotalMoney) values (@UserName,@CreateTime,@ProviderId,@TotalMoney); select @@identity";
+                cm.CommandText = "insert into T_Stock_Outhead (UserName,CreateTime,CustomerId,TotalMoney) values (@UserName,@CreateTime,@ProviderId,@TotalMoney); select @@identity";
                 cm.Parameters.AddWithValue("@UserName", inStock.Head.UserName);
-                cm.Parameters.AddWithValue("@ProviderId", inStock.Head.ProviderId);
+                cm.Parameters.AddWithValue("@ProviderId", inStock.Head.CustomerId);
                 cm.Parameters.AddWithValue("@CreateTime", inStock.Head.CreateTime);
                 cm.Parameters.AddWithValue("@TotalMoney", inStock.Head.TotalMoney);
                 object result = cm.ExecuteScalar();
                 int headId = Convert.ToInt32(result);
-                foreach (Book.Model.T_Stock_InItems item in inStock.Items)
+                foreach (Book.Model.T_Stock_OutItems item in inStock.Items)
                 {
                     cm.Parameters.Clear();
-                    cm.CommandText = "insert into t_stock_initems (HeadId,BookId,Amount,Discount) values (@HeadId,@BookId,@Amount,@Discount)";
+                    cm.CommandText = "insert into T_Stock_Outitems (HeadId,BookId,Amount,Discount) values (@HeadId,@BookId,@Amount,@Discount)";
                     cm.Parameters.AddWithValue("@HeadId", headId);
                     cm.Parameters.AddWithValue("@BookId", item.BookId);
                     cm.Parameters.AddWithValue("@Amount", item.Amount);
@@ -165,30 +167,32 @@ namespace Book.DAL
         /// </summary>
         /// <param name="Id">图书的Id</param>
         /// <returns></returns>
-        public Model.T_Stock_InHead GetHead(int Id)
+        public Model.T_Stock_OutHead GetHead(int Id)
         {
             SqlConnection co = new SqlConnection();
             co.ConnectionString = connstring;
             co.Open();
-            Book.Model.T_Stock_InHead item = new Model.T_Stock_InHead();
+            Book.Model.T_Stock_OutHead item = new Model.T_Stock_OutHead();
             SqlCommand cm = new SqlCommand();
-            cm.CommandText = "select * from V_InHead_Provider where Id = @headid";
+            cm.CommandText = "select * from V_OutHead_Customer where Id = @headid";
             cm.Parameters.AddWithValue("@headid", Id);
             cm.Connection = co;
-            item.Provider = new Model.T_Base_Provider();
+            item.Customer = new Model.T_Base_Customer();
             SqlDataReader dr = cm.ExecuteReader();
             while (dr.Read())
             {
                 item.Id = Id;
                 item.CreateTime = Convert.ToDateTime(dr["CreateTime"]);
-                item.ProviderId = Convert.ToInt32(dr["ProviderId"]);
+                item.CustomerId = Convert.ToInt32(dr["CustomerId"]);
                 item.UserName = Convert.ToString(dr["UserName"]);
-                item.Provider.Name = Convert.ToString(dr["Name"]);
+                item.Customer.Name = Convert.ToString(dr["Name"]);
             }
             dr.Close();
             co.Close();
 
             return item;
         }
+
+
     }
 }

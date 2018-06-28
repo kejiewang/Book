@@ -98,7 +98,9 @@ namespace Book.Web.Controllers
             List<Book.Model.T_Base_Provider> lst = bll.GetList(currentPage, PageSize, Name);
 
             ViewBag.Name = Name;
-            return Json(lst);
+
+            int c = bll.GetCount(Name);
+            return Json(new { count = c, result = Json(lst)});
 
         }
 

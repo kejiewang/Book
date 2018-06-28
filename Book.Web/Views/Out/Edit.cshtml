@@ -1,0 +1,307 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    Book.Model.T_Stock_OutHead item = ViewBag.item;
+}
+
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i> 出库单编辑</h3>
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="content-panel">
+
+                    <section id="unseen">
+                        <form class="form-horizontal style-form" method="get">
+                            <div class="form-group ">
+                                <label class="col-sm-2 col-sm-2 control-label">经手人</label>
+                                <div class="col-sm-10">
+                                    <input type="number" id="BookHeadId" class="hidden" value="@item.Id" />
+
+                                    <input type="text" id="txtUserName" class="form-control" value=@item.UserName>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 col-sm-2 control-label">客户</label>
+                                <div class="col-sm-10">
+                                    <input id="Provider" type="text" class="form-control" value=@item.Customer.Name real-value=@item.CustomerId>
+
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 col-sm-2 control-label">时间</label>
+                                <div class="col-sm-10">
+                                    <input type="text" id="txtCreateTime" class="form-control " value=@item.CreateTime>
+                                </div>
+                            </div>
+
+                        </form>
+                        <table id="InList"></table>
+
+                        <div id="toolbar" class="input-group" style="max-width:300px;">
+                            <input id="txtAddItem" type="text" class="form-control" data-value="1111" placeholder="输入书名...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="btnAddItem">新增</button>
+                            </span>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="btnSave">保存</button>
+
+                            </span>
+                        </div><!-- /input-group -->
+                    </section>
+                </div><!-- /content-panel -->
+            </div><!-- /col-lg-4 -->
+        </div><!-- /row -->
+    </section>
+</section>
+@section js{
+
+    <script src="~/assets/bootstraptable/src/bootstrap-table.js"></script>
+    <script src="~/assets/bootstrap-table-master/bootstrap.autocomplete.js"></script>
+    <script src="~/assets/bootstrap-editable.js"></script>
+    <script src="~/assets/bootstrap-table-editable.js"></script>
+
+    <script>
+        var Id = parseInt("@item.Id");
+        $('#InList').bootstrapTable({
+            url: '/out/GetModel2',
+            method: 'post',
+            dataType: "json",
+            dataField: "data",
+            //data: [],
+
+            classes: 'table',//边框
+            undefinedText: '',//当数据为 undefined 时显示的字符
+            pagination: true,//启动分页
+            paginationLoop: true,
+            pageNumber: 1,
+            pageSize: 5,
+            pageList: [1, 5, 10, 20],
+            queryParams: { HeadId: Id },
+            ajaxOptions: { HeadId: Id },
+            striped: true,
+            showColumns: false,  //显示下拉框勾选要显示的列
+            showRefresh: false,  //显示刷新按钮
+            showToggle: false,//显示一行是否改成竖着
+            showPaginationSwitch: false,//是否显示 下面的分页框
+            //  search: true, //显示搜索框
+            //toolbar操作
+            toolbarAlign: 'left',//工具栏对齐方式
+            buttonsAlign: 'right',//按钮对齐方式
+            toolbar: '#toolbar',//指定工作栏
+
+
+            columns: [{
+                field: 'checkbox',
+                title: 'checkbox',
+                checkbox: true
+            },
+            {
+                field: 'Id',
+                title: '内部Id',
+                align: 'center',
+                sortable: true
+            }, {
+                field: 'BookId',
+                title: "BookId",
+                align: 'center',
+                visible: false
+            }, {
+                field: 'Price',
+                title: 'Price',
+                align: 'center',
+                visible: false
+            },
+            {
+                field: 'SN',
+                title: '书号',
+                align: 'center',
+                sortable: true
+            },
+            {
+                field: 'BookName',
+                title: '书名',
+                align: 'center',
+                sortable: true
+            },
+            {
+                field: 'PressName',
+                title: '出版社',
+                align: 'center'
+            },
+            {
+                field: 'Amount',
+                title: '数量',
+                align: 'center',
+                editable: {
+                    type: 'text'
+                }
+
+            },
+            {
+                field: 'Discount',
+                title: '折扣',
+                align: 'center',
+                editable: {
+                    type: 'text'
+                }
+            },
+            {
+                field: "操作",
+                title: "操作",
+                align: "center",
+                formatter: function (value, row, index) {
+
+                    return "<a class='btn btn-default' href='#' id='btnDeleteItem role='button' onclick='DeleteItem(" + row.BookId + ");return false;'>删除</a>";
+
+                }
+            }
+
+            ],
+
+        });
+
+
+
+        $("#btn_delete").click(function () {
+            // alert("11");
+            var ids = $.map(
+                $('#InList').bootstrapTable('getSelections'),
+                function (row) {
+                    return row.Id;
+                });
+            $('#InList').bootstrapTable('remove',
+                           {
+                               field: 'Id',
+                               values: ids
+                           });
+        });
+    </script>
+    <script>
+        var row = {
+            Id: ""
+        }
+    </script>
+    <script>
+        $('#Provider').autocomplete({
+            source: function (query, process) {
+                var matchCount = 10;//允许返回结果集最大数量
+                $.post("/Customer/GetSearch", { "Name": query, "matchCount": matchCount }, function (respData) {
+                    //respData = $.parseJSON(respData);//解析返回的数据
+                    if (!respData || respData.length < 1) {
+                        alert('输入的供应商名字不正确');
+                        $("#Provider").parent().toggleClass("has-error");
+
+                    } else {
+                        $("#Provider").parent().toggleClass("has-success");
+                        return process(respData);
+                    }
+
+                });
+            },
+            formatItem: function (item) {
+                //row = item;
+                return item["Name"];
+            },
+            setValue: function (item) {
+                var tmpTest = item;
+                return { 'data-value': item["Name"], 'real-value': item["Id"] };
+            }
+        });
+    </script>
+    <script>
+        $('#txtAddItem').autocomplete({
+            source: function (query, process) {
+                var matchCount = 10;//允许返回结果集最大数量
+                $.post("/Index/GetSearch", { "SN": query, "matchCount": matchCount }, function (respData) {
+                    //respData = $.parseJSON(respData);//解析返回的数据
+                    if (!respData || respData.length < 1) {
+                        alert('输入的图书名字不正确');
+                        $("#txtAddItem").parent().toggleClass("has-error");
+
+                    } else {
+                        $("#txtAddItem").parent().toggleClass("has-success");
+                        return process(respData);
+                    }
+
+                });
+            },
+            formatItem: function (item) {
+
+                return item["BookName"] + "(" + item["SN"] + ")";
+            },
+            setValue: function (item) {
+
+
+                return { 'data-value': item["BookName"], 'real-value': item["Id"] };
+            }
+        });
+
+        $("#btnAddItem").click(function () { //获取文本框的实际值
+            var tmp = $("#txtAddItem").attr("real-value");
+            var id = parseInt(tmp);
+            var name = $("#txtAddItem").attr("value");
+            var item = {};
+            $.ajax({
+                async: false,
+                type: "post",
+                url: "/Index/GetFind",
+                data: {
+                    SN: tmp
+                },
+                dataType: "json",
+                success: function (data) {
+                    item = data[0];
+                }
+
+            });
+
+            if (id != "") {
+                $("#InList").bootstrapTable('insertRow', { index: 0, row: { Id: 0, BookId: id, SN: item.SN, BookName: name, PressName: item.PressName, Amount: "1", Discount: "1", Price: item.Price } });
+                $("#txtAddItem").val("");
+                $("#txtAddItem").attr("real-value", "");
+            }
+
+        });
+
+        function DeleteItem(id) {
+            var ids = [id];
+            // var id = parseInt(ids);
+            $('#InList').bootstrapTable('remove', {
+                field: 'BookId',
+                values: ids
+            });
+        }
+
+    </script>
+
+    <script>
+        $("#btnSave").click(function () {
+            var head = {
+                Id: $("#BookHeadId").val(),
+                UserName: $("#txtUserName").val(),
+                CreateTime: $("#txtCreateTime").val(),
+                CustomerId: $("#Provider").attr("real-value")
+            };
+            var items = $("#InList").bootstrapTable("getData");
+
+
+            $.ajax({
+
+                type: "POST",
+                url: "/out/EditSave",
+                data: {
+                    Head: head,
+                    Items: items,
+
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    //显示删除成功
+
+                    window.location.href = "/out/index";
+                }
+            });
+        });
+    </script>
+}

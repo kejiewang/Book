@@ -1,0 +1,252 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section css{
+}
+
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i> 出库单列表</h3>
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="content-panel">
+                    <h4><i class="fa fa-angle-right"></i> 出库单表</h4>
+                    <section id="unseen">
+                        <table id="InList"></table>
+                        <div id="toolbar" class="btn-group pull-left" style="margin-right: 20px;">
+                            <button id="btn_delete" type="button" class="btn btn-default" style="">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+                            </button>
+                            <button id="btn_add" type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+                            </button>
+                        </div>
+                    </section>
+                </div><!-- /content-panel -->
+            </div><!-- /col-lg-4 -->
+        </div><!-- /row -->
+
+
+    </section>
+
+
+</section>
+
+
+@section js{
+    @*<script src="~/assets/js/jquery.js">
+
+        </script>*@
+    <link href="~/assets/bootstraptable/src/bootstrap-table.css" rel="stylesheet" />
+
+    <script src="~/assets/bootstraptable/src/bootstrap-table.js"></script>
+
+    <script>
+
+        $('#InList').bootstrapTable({
+            url: '/out/GetList',
+            method: 'post',
+            dataType: "json",
+            //dataField: "data",
+            classes: 'table',//边框
+            undefinedText: '',//当数据为 undefined 时显示的字符
+            pagination: true,//启动分页
+            paginationLoop: true,
+            pageNumber: 1,
+            pageSize: 5,
+            pageList: [1, 5, 10, 20],
+            striped: true,
+            showColumns: true,  //显示下拉框勾选要显示的列
+            showRefresh: true,  //显示刷新按钮
+            showToggle: true,//显示一行是否改成竖着
+            showPaginationSwitch: true,//是否显示 下面的分页框
+            search: true, //显示搜索框
+            detailView: true,
+
+            toolbarAlign: 'left',
+            bottonsAlign: 'right',
+            toolbar: '#toolbar',
+            // 实现服务器分页
+            queryParamsType: '',
+            queryParams: queryParams, // 请求服务器时所传参数
+            sidePagination: 'server', // 请求服务器指定分页
+            locale: 'zh-CN',
+
+            onExpandRow: function (index, row, $detail) {
+                oTableInit.InitSubTable(index, row, $detail);
+            },
+
+            //detailFormatter: function (index, row) {
+            //    return JSON.stringify(row);
+            //},
+            columns: [{
+                field: 'checkbox',
+                title: 'checkbox',
+                checkbox: true
+            }, {
+                field: 'Head.Id',
+                title: '序号'
+            }, {
+                field: 'Head.UserName',
+                title: '名称',
+                align: 'center',
+                sortable: true
+            }, {
+                field: 'Head.CreateTime',
+                title: '创立时间',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var tmp = eval('new ' + eval('' + value + '').source);
+                    return tmp.getFullYear() + '-' + (tmp.getMonth() + 1) + '-' + tmp.getDate();
+                }
+
+            },
+            {
+                field: 'Head.TotalMoney',
+                title: '总金额',
+                align: 'center'
+            },
+            {
+                field: 'Head.Customer.Name',
+                title: '客户',
+                align: 'center'
+            }, {
+                field: 'Head.Id',
+                title: '操作',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    //var tmp = eval('new ' + eval('' + value + '').source);
+                    //return tmp.getFullYear() + '-' + (tmp.getMonth() + 1) + '-' + tmp.getDate();
+                    return "<button  type=\"button\" class=\"btn btn-default\" onclick = \"editClick(" + value + ")\"> <span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></spa>编辑</button>"
+                }
+            }
+
+            ]
+        });
+
+        function editClick(id) {
+
+            //window.alert(""+id);
+            window.location.href = "/Out/edit?Id=" + id;
+        }
+        function queryParams(params) {
+            return {
+                pageSize: params.pageSize,
+                pageIndex: params.pageNumber,
+                search: params.searchText
+            }
+        }
+
+        //function
+
+        $("#btn_delete").click(function () {
+            //alert("11");
+            var ids = $.map(
+                $('#InList').bootstrapTable('getSelections'),
+                function (row) {
+                    return row.Id;
+                });
+            //调用ajax，删除服务器端
+
+            $.ajax({
+                type: "POST",
+                url: "/Out/Delete",
+                traditional: true,
+                data: {
+                    stringId: ids,
+
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    //显示删除成功
+                    if (data.Code == 1) {
+                        $('#InList').bootstrapTable('remove',
+                            {
+                                field: 'Id',
+                                values: ids
+                            });
+                    } else {
+                        alert("删除失败");
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        var oTableInit = new Object();
+        oTableInit.InitSubTable = function (index, row, $detail) {
+            var parentId = row.Head.Id;
+            var cur_table = $detail.html('<table></table>').find('table');
+            $(cur_table).bootstrapTable({
+                url: '/out/GetModel',
+                method: 'post',
+                dataType: 'json',
+                dataField: 'data',
+                queryParams: { HeadId: parentId },
+                ajaxOptions: { HeadId: parentId },
+                clickToSelect: true,
+                pagination: true, //是否显示分页（*）
+                sortOrder: "asc", //排序方式
+                pageNumber: 1, //初始化加载第一页，默认第一页
+                height: 260,
+                pageSize: 6, //每页的记录行数（*）
+                pageList: [6, 12, 24, 48], //可供选择的每页的行数（*）
+                paginationPreText: '<', //上下翻页
+                paginationNextText: '>',
+                columns: [{
+                    title: "序号",
+                    formatter: function (value, row, index) {
+                        return index + 1;
+                    },
+                    rowspan: 1,
+                    align: 'center',
+                    width: '50px'
+                }, {
+                    field: 'Book.BookName',
+                    title: '书名',
+                    align: 'left',
+                }, {
+                    field: 'Book.PressName',
+                    title: '出版社',
+                    align: 'left',
+                }, {
+                    field: 'Book.SN',
+                    title: '书号',
+                    align: 'center',
+                }, {
+                    field: 'Book.Author',
+                    title: '作者',
+                    align: 'right',
+                },
+                   {
+                       field: 'Book.Price',
+                       title: '价格',
+                       align: 'right',
+                   },
+                   {
+                       field: 'Discount',
+                       title: '折扣',
+                       align: 'right',
+                   },
+                   {
+                       field: 'Amount',
+                       title: '数量',
+                       align: 'right',
+                   }
+                ],
+                //无线循环取子表，直到子表里面没有记录
+                responseHandler: function (res) {
+                    //在ajax获取到数据，渲染表格之前，修改数据源
+                    return res.Items;
+                },
+                onExpandRow: function (index, row, $Subdetail) {
+                    oInit.InitSubTable(index, row, $Subdetail);
+                }
+
+            });
+
+            return oTableInit;
+        };
+
+    </script>
+}

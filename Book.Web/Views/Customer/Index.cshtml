@@ -26,7 +26,7 @@
                         </div>
 
 
-                        <input type="submit" class="btn btn-default" value="查询"></input>
+                        @*<input type="submit" class="btn btn-default" value="查询"></input>*@
                     </form>
                     <h4><i class="fa fa-angle-right"></i>客户列表 </h4>
                     <section id="unseen">
@@ -142,6 +142,11 @@
             })
 
         }
+
+        $("#Name").on('input propertychange keydown change', function () {
+            console.log("hello");
+            getList(1);
+        })
     </script>
 
 }
@@ -154,7 +159,10 @@
             url: "/Customer/GetList",
             data: { currentPage: currentPage, Name: name },//"currentPage=" + currentPage,
             type: "post",
-            success: function (result) {
+            success: function (data) {
+                var result = data.result.Data;
+                var Count = data.count;
+                console.log(Count);
                 // alert(result[0].BookName);
                 var html = "";
                 for (var i = 0; i < result.length; i++) {
@@ -179,6 +187,9 @@
 
                 var tempMaxPageIndex = parseInt("@MaxPageIndex");
                 var temp2 = parseInt("@Math.Ceiling(count * 1.0 / pageSize)");
+
+                tt = parseInt("@pageSize");
+                temp2 = Math.ceil(Count * 1.0 / tt);
 
                 if (PageIndex != 1) {
                     btnGroupHtml += "<button type=\"button\" class=\"btn btn-default \" onclick=\"getList(" + 1 + ")\">" + 1 + "</button>";

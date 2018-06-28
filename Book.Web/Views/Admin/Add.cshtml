@@ -1,0 +1,96 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml"; ;
+}
+
+
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i> 用户信息</h3>
+
+        <!-- BASIC FORM ELELEMNTS -->
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="form-panel">
+                    <h4 class="mb"><i class="fa fa-angle-right"></i> 用户添加</h4>
+                    <form class="form-horizontal style-form" action="/admin/AddSave" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-2 control-label">用户名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="LoginName" name="LoginName">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="PWD" name="PWD">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-2 control-label">权限</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="RoleName" name="RoleName">
+                                <input type="text" class="hidden" id="RoleId" name="RoleId">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="col-sm-10">
+
+                                <input id="submit" type="submit" name="Save" value="提交 " class="btn btn-primary btn-lg" />
+                            </div>
+                        </div>
+
+
+                    </form>
+
+                    
+                </div>
+            </div><!-- col-lg-12-->
+        </div>
+        <!-- /row -->
+
+    </section><! --/wrapper -->
+</section><!-- /MAIN CONTENT -->
+
+@section js{
+<script src="~/assets/bootstraptable/src/bootstrap-table.js"></script>
+<script src="~/assets/bootstrap-table-master/bootstrap.autocomplete.js"></script>
+<script src="~/assets/bootstrap-editable.js"></script>
+<script src="~/assets/bootstrap-table-editable.js"></script>
+<script>
+    $('#RoleName').autocomplete({
+        source: function (query, process) {
+            var matchCount = 10;//允许返回结果集最大数量
+            $.post("/Admin/GetSearch", { "Name": query, "matchCount": matchCount }, function (respData) {
+                //respData = $.parseJSON(respData);//解析返回的数据
+                if (!respData || respData.length < 1) {
+                    alert('没有这个权限');
+                    $("#RoleName").parent().toggleClass("has-error");
+
+                } else {
+                    $("#RoleName").parent().toggleClass("has-success");
+                    return process(respData);
+                }
+
+            });
+        },
+        formatItem: function (item) {
+            //row = item;
+            return item["RoleName"];
+        },
+        setValue: function (item) {
+            var tmpTest = item;
+            return { 'data-value': item["RoleName"], 'real-value': item["RoleId"] };
+        }
+    });
+
+
+    $("#submit").mousedown(function (event) {
+        $("#RoleId").attr("value", $("#RoleName").attr("real-value"));
+    });
+        </script>
+  }
+

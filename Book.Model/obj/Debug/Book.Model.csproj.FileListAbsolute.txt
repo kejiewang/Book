@@ -2,4 +2,3 @@ F:\Web工程案例\课程设计\project2\Web\Book.Model\bin\Debug\Book.Model.dll
 F:\Web工程案例\课程设计\project2\Web\Book.Model\bin\Debug\Book.Model.pdb
 F:\Web工程案例\课程设计\project2\Web\Book.Model\obj\Debug\Book.Model.dll
 F:\Web工程案例\课程设计\project2\Web\Book.Model\obj\Debug\Book.Model.pdb
-F:\Web工程案例\课程设计\project2\Web\Book.Model\obj\Debug\Book.Model.csprojResolveAssemblyReference.cache

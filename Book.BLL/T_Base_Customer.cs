@@ -68,5 +68,12 @@ namespace Book.BLL
             Book.DAL.T_Base_Customer dal = new DAL.T_Base_Customer();
             return dal.GetSearch(Name, matchCount);
         }
+
+        public int GetCount(String Name = "")
+        {
+            Book.DAL.T_Base_Customer dal = new DAL.T_Base_Customer();
+            int count = dal.GetCount(Name);
+            return count;
+        }
     }
 }

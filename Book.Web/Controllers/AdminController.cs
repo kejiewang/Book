@@ -6,27 +6,29 @@ using System.Web.Mvc;
 
 namespace Book.Web.Controllers
 {
-    public class CustomerController : Controller
+    public class AdminController : Controller
     {
         //
-        // GET: /Customer/
+        // GET: /Admin/
         int PageSize = 5;
         int MaxPageIndex = 8;
 
         public JsonResult GetSearch(string Name = "", int matchCount = 10)
         {
             Name = Name.Trim();
-            Book.BLL.T_Base_Customer bll = new BLL.T_Base_Customer();
-            List<Book.Model.T_Base_Customer> lst = bll.GetSearch(Name, matchCount);
+            Book.BLL.T_Base_Admin bll = new BLL.T_Base_Admin();
+            List<Book.Model.T_Base_Admin> lst = bll.GetSearch(Name, matchCount);
 
             return Json(lst);
         }
+
+
         public ActionResult Index(String Name = "")
         {
-            Book.BLL.T_Base_Customer bll = new BLL.T_Base_Customer();
+            Book.BLL.T_Base_Admin bll = new BLL.T_Base_Admin();
 
-            Book.Model.T_Base_Customer_Page page = bll.GetListPage(1, PageSize, Name);
-            //List<Book.Model.T_Base_Customer> lst = bll.GetAll();
+            Book.Model.T_Base_Admin_Page page = bll.GetListPage(1, PageSize, Name);
+            //List<Book.Model.T_Base_Admin> lst = bll.GetAll();
             ViewBag.MaxPageIndex = MaxPageIndex;
 
             ViewBag.PageSize = PageSize;
@@ -39,27 +41,26 @@ namespace Book.Web.Controllers
         {
             return View();
         }
-        public ActionResult AddSave(string Name, string Tel, string Fax, string Memo)
+        public ActionResult AddSave(string LoginName, string PWD, int RoleId)
         {
-            Book.Model.T_Base_Customer Customer = new Model.T_Base_Customer();
-            Customer.Name = Name;
-            Customer.Tel = Tel;
-            Customer.Fax = Fax;
-            Customer.Memo = Memo;
-            Book.BLL.T_Base_Customer bll = new BLL.T_Base_Customer();
-            bll.Add(Customer);
+            Book.Model.T_Base_Admin Admin = new Model.T_Base_Admin();
+            Admin.LoginName = LoginName;
+            Admin.PWD = PWD;
+            Admin.RoleId = RoleId;
+            Book.BLL.T_Base_Admin bll = new BLL.T_Base_Admin();
+            bll.Add(Admin);
             return Redirect("Index");
         }
         public ActionResult Delete(int Id)
         {
-            Book.BLL.T_Base_Customer bll = new BLL.T_Base_Customer();
+            Book.BLL.T_Base_Admin bll = new BLL.T_Base_Admin();
             int result = bll.Delete(Id);
             return RedirectToAction("Index");
         }
 
         public JsonResult DeleteJson(int Id)
         {
-            Book.BLL.T_Base_Customer bll = new BLL.T_Base_Customer();
+            Book.BLL.T_Base_Admin bll = new BLL.T_Base_Admin();
             int result = bll.Delete(Id);
             Book.Model.Message msg;
             if (result > 0)
@@ -75,16 +76,16 @@ namespace Book.Web.Controllers
 
         public ActionResult Update(int Id)
         {
-            Book.BLL.T_Base_Customer bll = new BLL.T_Base_Customer();
-            Book.Model.T_Base_Customer Customer;
-            Customer = bll.GetModal(Id);
-            ViewBag.Customer = Customer;
+            Book.BLL.T_Base_Admin bll = new BLL.T_Base_Admin();
+            Book.Model.T_Base_Admin Admin;
+            Admin = bll.GetModal(Id);
+            ViewBag.Admin = Admin;
             return View();
         }
-        public ActionResult UpdateSave(Book.Model.T_Base_Customer Customer)
+        public ActionResult UpdateSave(Book.Model.T_Base_Admin Admin)
         {
-            Book.BLL.T_Base_Customer bll = new BLL.T_Base_Customer();
-            int result = bll.Update(Customer);
+            Book.BLL.T_Base_Admin bll = new BLL.T_Base_Admin();
+            int result = bll.Update(Admin);
 
             return Redirect("Index");
 
@@ -92,11 +93,12 @@ namespace Book.Web.Controllers
 
         public JsonResult GetList(int currentPage, String Name = "")
         {
-            Book.BLL.T_Base_Customer bll = new BLL.T_Base_Customer();
-            //List<Book.Model.T_Base_Customer> lst = bll.GetAll();
-            List<Book.Model.T_Base_Customer> lst = bll.GetList(currentPage, PageSize, Name);
+            Book.BLL.T_Base_Admin bll = new BLL.T_Base_Admin();
+            //List<Book.Model.T_Base_Admin> lst = bll.GetAll();
+            List<Book.Model.T_Base_Admin> lst = bll.GetList(currentPage, PageSize, Name);
 
             ViewBag.Name = Name;
+
             int c = bll.GetCount(Name);
             return Json(new { count = c, result = Json(lst) });
 

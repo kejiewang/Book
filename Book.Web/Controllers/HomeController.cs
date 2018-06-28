@@ -49,5 +49,11 @@ namespace Book.Web.Controllers
 
             }
         }
+
+        public ActionResult LogOut()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("login", "home");
+        }
 	}
 }
