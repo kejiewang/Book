@@ -129,6 +129,7 @@
                 align: 'center',
                 editable: {
                     type: 'text'
+
                 }
 
             },
@@ -137,7 +138,15 @@
                 title: '折扣',
                 align: 'center',
                 editable: {
-                    type: 'text'
+                    type: 'text',
+                    validate: function (value) {
+                        if ($.trim(value) == "")
+                            return '请输入数值0到1之间';
+                        if (isNaN(value))
+                            return '请输入数值，数值在0到1之间';
+                        if (value < 0 || value > 1)
+                            return '请输入正确的数值在0到1之间';
+                    }
                 }
             },
             {
@@ -177,6 +186,31 @@
         }
     </script>
     <script>
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(),    //day
+                "h+": this.getHours(),   //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+                "S": this.getMilliseconds() //millisecond
+            }
+            if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
+            (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o) if (new RegExp("(" + k + ")").test(format))
+                format = format.replace(RegExp.$1,
+                RegExp.$1.length == 1 ? o[k] :
+                ("00" + o[k]).substr(("" + o[k]).length));
+            return format;
+        }
+        $(document).ready(function () {
+            //alert("hello");
+            var myDate = new Date();
+            //DateFormat bf = new SimpleDateFormat("yyyy-MM-dd");
+            $("#txtCreateTime").attr("value", myDate.format('yyyy-MM-dd'));
+
+        });
         $('#Provider').autocomplete({
             source: function (query, process) {
                 var matchCount = 10;//允许返回结果集最大数量
@@ -207,7 +241,7 @@
         $('#txtAddItem').autocomplete({
             source: function (query, process) {
                 var matchCount = 10;//允许返回结果集最大数量
-                $.post("/Index/GetSearch", { "SN": query, "matchCount": matchCount }, function (respData) {
+                $.post("/Index/GetSearch2", { "SN": query, "matchCount": matchCount }, function (respData) {
                     //respData = $.parseJSON(respData);//解析返回的数据
                     if (!respData || respData.length < 1) {
                         alert('输入的图书名字不正确');
@@ -251,7 +285,7 @@
             });
 
             if (id != "") {
-                $("#InList").bootstrapTable('insertRow', { index: 0, row: { Id: 0, BookId: id, SN: item.SN, BookName: name, PressName: item.PressName, Amount: "1", Discount: "1", Price: item.Price } });
+                $("#InList").bootstrapTable('insertRow', { index: 0, row: { Id: 0, BookId: id, SN: item.SN, BookName: name, PressName: item.PressName, Amount: "0", Discount: "1", Price: item.Price } });
                 $("#txtAddItem").val("");
                 $("#txtAddItem").attr("real-value", "");
             }
@@ -294,15 +328,6 @@
 
                     window.location.href = "/out/index";
                     return;
-                    //if (data.Code == 1) {
-                    //    $('#InList').bootstrapTable('remove',
-                    //        {
-                    //            field: 'Id',
-                    //            values: [0]
-                    //        });
-                    //} else {
-                    //    alert("删除失败");
-                    //}
                 }
             });
         });

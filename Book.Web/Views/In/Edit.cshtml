@@ -144,7 +144,15 @@
                 title: '折扣',
                 align: 'center',
                 editable: {
-                    type: 'text'
+                    type: 'text',
+                    validate: function (value) {
+                        if ($.trim(value) == "")
+                            return '请输入数值0到1之间';
+                        if (isNaN(value))
+                            return '请输入数值在0到1之间';
+                        if (value < 0 || value > 1)
+                            return '请输入正确的数值在0到1之间';
+                    }
                 }
             },
             {
@@ -211,6 +219,7 @@
         });
     </script>
     <script>
+
         $('#txtAddItem').autocomplete({
             source: function (query, process) {
                 var matchCount = 10;//允许返回结果集最大数量

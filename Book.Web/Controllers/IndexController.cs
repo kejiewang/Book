@@ -115,6 +115,14 @@ namespace Book.Web.Controllers
             return Json(lst);
         }
 
+        public JsonResult GetSearch2(string SN)
+        {
+            // Name = Name.Trim();
+            Book.BLL.T_Base_Book bll = new BLL.T_Base_Book();
+            List<Book.Model.T_Base_Book> lst = bll.GetSearch2(SN);//new List<Model.T_Base_Book>();
+            return Json(lst);
+        }
+
         public JsonResult GetFind(string SN)
         {
             Book.BLL.T_Base_Book bll = new BLL.T_Base_Book();

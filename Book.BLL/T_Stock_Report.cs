@@ -21,5 +21,13 @@ namespace Book.BLL
             return dal.GetList(CurrentPage, PageSize);
         }
 
+        //public JsonResult GetSearch(string Name = "", int matchCount = 10)
+        //{
+        //    Name = Name.Trim();
+        //    Book.BLL.T_Stock_Report bll = new T_Stock_Report();
+        //    List<Book.Model.T_Base_Book> 
+
+        //}
+
     }
 }

@@ -191,6 +191,34 @@ namespace Book.DAL
             return lst;
         }
 
+        public List<Model.T_Base_Book> GetSearch2(string SN)
+        {
+            SqlConnection co = new SqlConnection();
+            co.ConnectionString = "server=10.132.239.3;uid=sa;pwd=Jsj123456;database=15211160113";
+            co.Open();
+            SqlCommand cm = new SqlCommand();
+            cm.Connection = co;
+            cm.CommandText = "select t_base_book.* from t_base_book,t_stock_report WHERE sn like '%" + SN + "%' and t_base_book.id = t_stock_report.id" ;
+            SqlDataReader dr = cm.ExecuteReader();
+            List<Book.Model.T_Base_Book> lst = new List<Model.T_Base_Book>();
+            while (dr.Read())
+            {
+                Book.Model.T_Base_Book book = new Model.T_Base_Book();
+                book.Id = Convert.ToInt32(dr["Id"]);
+                book.BookName = Convert.ToString(dr["BookName"]);
+                book.PressName = Convert.ToString(dr["PressName"]);
+                book.Author = Convert.ToString(dr["Author"]);
+                book.Version = Convert.ToInt32(dr["Version"]);
+                book.SN = Convert.ToString(dr["SN"]);
+                book.Price = Convert.ToDecimal(dr["Price"]);
+                lst.Add(book);
+            }
+            dr.Close();
+            co.Close();
+            return lst;
+
+        }
+
         public List<Model.T_Base_Book> GetFind(string SN)
         {
             //throw new NotImplementedException();

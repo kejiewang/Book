@@ -69,6 +69,12 @@ namespace Book.BLL
             return dal.GetSearch(SN);
         }
 
+        public List<Model.T_Base_Book> GetSearch2(string SN)
+        {
+            Book.DAL.T_Base_Book dal = new DAL.T_Base_Book();
+            return dal.GetSearch2(SN);
+        }
+
         public List<Model.T_Base_Book> GetFind(string SN)
         {
             Book.DAL.T_Base_Book dal = new DAL.T_Base_Book();
